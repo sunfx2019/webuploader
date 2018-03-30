@@ -15,7 +15,11 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 /**
- * Servlet user to accept file upload
+ * 普通文件上传方式
+ * 
+ * @Description 
+ * @author FeiXiangSun
+ * @date 2018年3月13日 下午11:33:01
  */
 public class FileUploadServlet extends HttpServlet {
 
@@ -27,9 +31,7 @@ public class FileUploadServlet extends HttpServlet {
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         
-        response.getWriter().append("Served at: ").append(request.getContextPath());
-
-        log.debug("进入后台...");
+        //response.getWriter().append("Served at: ").append(request.getContextPath());
 
         // 1.创建DiskFileItemFactory对象，配置缓存用
         DiskFileItemFactory diskFileItemFactory = new DiskFileItemFactory();
@@ -45,11 +47,12 @@ public class FileUploadServlet extends HttpServlet {
         String fileMd5 = null;
         // 文件的索引
         String chunk = null;
+        
         try {
             List<FileItem> items = servletFileUpload.parseRequest(request);
             for (FileItem fileItem : items) {
-
-                if (fileItem.isFormField()) { // >> 普通数据
+                // >> 普通数据
+                if (fileItem.isFormField()) { 
                     String fieldName = fileItem.getFieldName();
                     if ("info".equals(fieldName)) {
                         String info = fileItem.getString("utf-8");
@@ -63,13 +66,7 @@ public class FileUploadServlet extends HttpServlet {
                         chunk = fileItem.getString("utf-8");
                         log.debug("chunk:" + chunk);
                     }
-                } else { // >> 文件
-                    /*
-                     * // 1. 获取文件名称 String name = fileItem.getName(); 
-                     * // 2. 获取文件的实际内容 InputStream is = fileItem.getInputStream();
-                     * // 3. 保存文件 FileUtils.copyInputStreamToFile(is, new File(serverPath + "/" + name));
-                     */
-
+                } else { 
                     // 如果文件夹没有创建文件夹
                     File file = new File(serverPath + "/" + fileMd5);
                     if (!file.exists()) {
@@ -78,12 +75,12 @@ public class FileUploadServlet extends HttpServlet {
                     // 保存文件
                     File chunkFile = new File(serverPath + "/" + fileMd5 + "/" + chunk);
                     FileUtils.copyInputStreamToFile(fileItem.getInputStream(), chunkFile);
-
+                    response.getWriter().append("Served at: ").append(chunkFile.getAbsolutePath());
+                    log.debug(String.format("上传文件[%s]ok...", chunkFile.getAbsolutePath()));
                 }
-
             }
-
         } catch (Exception e) {
+            response.getWriter().append("Served is error: ").append(e.getMessage());
             log.debug(e.getMessage(), e);
         }
 

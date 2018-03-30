@@ -1,29 +1,29 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8"
-    pageEncoding="UTF-8"%>
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-<title>使用webuploader上传</title>
-<!-- 1.引入文件 -->
-<link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath }/js/webuploader.css">
-<script type="text/javascript" src="${pageContext.request.contextPath }/js/jquery-2.1.4.min.js"></script>
-<script type="text/javascript" src="${pageContext.request.contextPath }/js/webuploader.js"></script>
-<style type="text/css">
-	#dndArea {
-		width: 200px;
-		height: 100px;
-		border-color: red;
-		border-style: dashed;
-	}
-</style>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+	<title>使用webuploader上传</title>
+	<!-- 1.引入文件 -->
+	<link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/js/webuploader.css">
+	<script type="text/javascript" src="${pageContext.request.contextPath}/js/jquery-2.1.4.min.js"></script>
+	<script type="text/javascript" src="${pageContext.request.contextPath}/js/webuploader.js"></script>
+	<style type="text/css">
+		#dndArea {
+			width: 200px;
+			height: 100px;
+			border-color: red;
+			border-style: dashed;
+		}
+	</style>
 </head>
 <body>
+	<h2>切片分批上传</h2>
 	<!-- 2.创建页面元素 -->
 	<div id="uploader">
 		<!-- 创建用于拖拽的区域 -->
 		<div id="dndArea"></div>
-		
 		<!-- 用于显示文件列表 -->
 		<div id="fileList"></div>
 		<!-- 用于选择文件 -->
@@ -57,6 +57,7 @@
 					return deferred.promise();
 				},
 				beforeSend:function(block) {
+					
 					var deferred = WebUploader.Deferred();
 					
 					// 支持断点续传，发送到后台判断是否已经上传过
@@ -97,7 +98,8 @@
 							type:"POST",
 							url:"${pageContext.request.contextPath}/UploadActionServlet?action=mergeChunks",
 							data:{
-								fileMd5:fileMd5
+								fileMd5: fileMd5,
+								fileName: fileName
 							},
 							success:function(response){
 								
